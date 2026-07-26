@@ -1,97 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/connectToDB";
-import Category from "@/lib/models/Category";
+import { NextResponse } from "next/server";
+import { Category } from "@/lib/models/Category";
+import { connectToDB } from "@/lib/connectToDB";
 
 export async function GET() {
-  try {
-    await connectDB();
-
-    const categories = await Category.find().sort({
-      createdAt: -1,
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: categories,
-    });
-  } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to fetch categories.",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  await connectToDB();
+  const data = await Category.find();
+  const response = NextResponse.json(data);
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  return response;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    await connectDB();
+    const data = await req.json();
 
-    const body = await request.json();
-
-    const {
-      name,
-      description,
-      image,
-      isActive,
-    } = body;
-
-    const slug = name
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-");
-
-    const existingCategory = await Category.findOne({
-      slug,
-    });
-
-    if (existingCategory) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Category already exists.",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const category = await Category.create({
-      name,
-      slug,
-      description,
-      image,
-      isActive,
-    });
-
+    // Connect to the database
+    await connectToDB();
+    await Category.create(data);
     return NextResponse.json(
-      {
-        success: true,
-        message: "Category created successfully.",
-        data: category,
-      },
-      {
-        status: 201,
-      }
+      { message: "Data created" },
+      { status: 201 }
     );
   } catch (error) {
-    console.error(error);
-
+    console.error("Error creating data:", error);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to create category.",
-      },
-      {
-        status: 500,
-      }
+      { message: "Failed to create data" },
+      { status: 500 }
     );
   }
 }

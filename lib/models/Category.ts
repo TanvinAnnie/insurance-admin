@@ -1,15 +1,6 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-export interface ICategory extends Document {
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-const CategorySchema = new Schema<ICategory>(
+const CategorySchema = new Schema(
   {
     name: {
       type: String,
@@ -46,8 +37,5 @@ const CategorySchema = new Schema<ICategory>(
   }
 );
 
-const Category: Model<ICategory> =
-  mongoose.models.Category ||
-  mongoose.model<ICategory>("Category", CategorySchema);
 
-export default Category;
+export const Category = mongoose.models.Category || mongoose.model("Category", CategorySchema);

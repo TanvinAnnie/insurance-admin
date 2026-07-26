@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/connectToDB";
 import Settings from "@/lib/models/Settings";
+import { connectToDB } from "@/lib/connectToDB";
 
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDB();
 
     let settings = await Settings.findOne();
 
@@ -54,7 +54,7 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   try {
-    await connectDB();
+    await connectToDB();
 
     const body = await req.json();
 

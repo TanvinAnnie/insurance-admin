@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/connectToDB";
 import Product from "@/lib/models/Product";
+import { connectToDB } from "@/lib/connectToDB";
 
 function generateSlug(text: string) {
   return text
@@ -13,7 +13,7 @@ function generateSlug(text: string) {
 
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDB();
 
     const products = await Product.find()
       .populate("category")
@@ -40,7 +40,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
+    await connectToDB();
 
     const body = await req.json();
 

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/connectToDB";
 import Hero from "@/lib/models/Hero";
+import { connectToDB } from "@/lib/connectToDB";
 
 
 // GET All Hero
 export async function GET() {
   try {
-    await connectDB();
+    await connectToDB();
 
     const heroes = await Hero.find().sort({ createdAt: -1 });
 
@@ -33,7 +33,7 @@ export async function GET() {
 // Create Hero
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
+    await connectToDB();
 
     const body = await req.json();
 
